@@ -1,0 +1,3 @@
+[submodule "APE"]
+	path = APE
+	url = git@github.com:Attempto/APE.git
