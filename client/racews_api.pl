@@ -1,47 +1,20 @@
-:- use_module('../prolog/race').
+:- module(racews_api, [
+    get_element/3,
+    create_soap_message/2,
+    create_error_soap_message/2,
+    process/2,
+    race_ns/1
+]).
+
+:- use_module('../prolog/race', [
+    check_consistency/5,
+    prove/7,
+    answer_query/7
+]).
 
 env_ns('http://schemas.xmlsoap.org/soap/envelope/').
 % TODO: make configurable
 race_ns('http://attempto.ifi.uzh.ch/race').
-
-
-run_race :-
-	catch(
-		call_with_time_limit(20, run_race_x),
-		CatchType,
-		(
-			create_error_soap_message(CatchType, SOAPOutput),
-		    format(user_error, 'REPLY:\n~w\n\n', SOAPOutput),
-		    format('~w\n', SOAPOutput)
-		)
-	).
-
-
-run_race_x :-
-    prompt(_, ''),
-    read_stream_to_codes(user_input, SOAPInputCodes),
-    atom_codes(SOAPInput, SOAPInputCodes),
-    format(user_error, 'REQUEST:\n~w\n\n', SOAPInput),
-    atom_to_memory_file(SOAPInput, InHandle),
-    open_memory_file(InHandle, read, In),
-    load_structure(stream(In), Message, [dialect(xmlns)]),
-    close(In),
-    free_memory_file(InHandle),
-    get_element(Message, 'Envelope', Envelope),
-    get_element(Envelope, 'Body', Body),
-    get_element(Body, 'Request', element(_, _, Request)),
-    process(Request, Reply),
-    race_ns(RaceNS),
-    create_soap_message(element(RaceNS:'Reply', [], Reply), SOAPOutput),
-    format(user_error, 'REPLY:\n~w\n\n', SOAPOutput),
-    format('~w\n', SOAPOutput),
-    !.
-
-run_race_x :-
-	create_error_soap_message('Invalid request', SOAPOutput),
-    format(user_error, 'REPLY:\n~w\n\n', SOAPOutput),
-    format('~w\n', SOAPOutput).
-
 
 process(Request, Reply) :-
     get_element(Request, 'Mode', element(_, _, ['check_consistency'])),

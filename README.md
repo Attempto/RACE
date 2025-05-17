@@ -14,19 +14,32 @@
 $ git clone --recurse-submodules git@github.com:Attempto/RACE.git
 $ cd APE
 $ make plp
-
-edit prolog/race.pl and comment out ":- check"
 ```
+
+Also:
+
+- edit <prolog/race.pl> and comment out `:- check`
+- download Clex and recompile APE
 
 ### Using the webservice
 
-```
+```sh
 $ cd client
+$ swipl -O -f racews_server.pl -g "qsave_program('racews_server.exe', [goal(main), toplevel(halt)])." -t halt
+$ ./racews_server.exe -port 5000
+```
+
+The RACE webclient is now running on <http://127.0.0.1:5000> and it connects to the POST/SOAP service running on <http://localhost:5000/race>.
+
+A deprecated Flask-based service can be used like this:
+
+```sh
 $ swipl -o racews.sav -c racews
 $ python3 racews.py
 ```
 
-The RACE webclient is now running on http://127.0.0.1:5000
+(It is deprecated because it is ~10 times slower and adds the extra Python dependency.)
+
 
 ## Query Modes
 ```
