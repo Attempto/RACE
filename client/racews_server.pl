@@ -16,7 +16,7 @@
 % Web client (which posts queries to the web service)
 :- http_handler(root(.), http_reply_file('racews.html', []), []).
 % Web service
-:- http_handler(root(race), race_handler, [method(post)]).
+:- http_handler(root(service/race), race_handler, [method(post)]).
 
 :- dynamic(http_server_time_limit/1).
 

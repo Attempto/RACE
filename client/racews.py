@@ -21,7 +21,7 @@ prolog_command = [
 def index():
     return send_from_directory(".", "racews.html")
 
-@app.route("/race", methods=["POST"])
+@app.route("/service/race", methods=["POST"])
 def run_race():
     input_data = request.get_data().decode("utf-8")
 
