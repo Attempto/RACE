@@ -5,23 +5,23 @@
 ### Dependencies
 
 - [SWI-Prolog](http://www.swi-prolog.org) (tested with v9.2.8)
-- [APE](https://github.com/Attempto/APE) (included as a submodule)
-- [Flask](https://flask.palletsprojects.com/), used for the webservice
+- [APE](https://github.com/Attempto/APE): ACE parser. Included as a git submodule and compiled into the RACE executable.
+- (optional) [Clex](https://github.com/Attempto/Clex): large lexicon for APE
+- (deprecated) [Flask](https://flask.palletsprojects.com/) web server that can be used for the RACE webservice
 
 ### Installation
 
-```
+```sh
+# Download the RACE and APE source code
 $ git clone --recurse-submodules git@github.com:Attempto/RACE.git
+# Optionally include a larger lexicon
+$ curl -L https://raw.github.com/Attempto/Clex/master/clex_lexicon.pl > APE/prolog/lexicon/clex_lexicon.pl
+# Pre-compile APE
 $ cd APE
 $ make plp
 ```
 
-Also:
-
-- edit <prolog/race.pl> and comment out `:- check`
-- download Clex and recompile APE
-
-### Using the webservice
+### Compiling and running the RACE webservice
 
 ```sh
 $ cd client
@@ -31,7 +31,7 @@ $ ./racews_server.exe -port 5000
 
 The RACE webclient is now running on <http://127.0.0.1:5000> and it connects to the POST/SOAP service running on <http://localhost:5000/race>.
 
-A deprecated Flask-based service can be used like this:
+The deprecated Flask-based service can be used like this:
 
 ```sh
 $ swipl -o racews.sav -c racews
@@ -42,7 +42,8 @@ $ python3 racews.py
 
 
 ## Query Modes
-```
+
+```prolog
 %---------------------------------------------------------------------------------------------------------
 %
 %  The Attempto Reasoner RACE offers comprehensive query modes to interrogate an ACE text, concretely
