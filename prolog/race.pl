@@ -7,7 +7,14 @@
 %  N. E. Fuchs
 %  University of Zurich
 %
-%  26 March 2024
+%  31 July 2025
+%
+%---------------------------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------------------------
+%
+%  Log
+%
+%  31 July 2025: abduction deactivated because implementation is too simple
 %
 %---------------------------------------------------------------------------------------------------------
 
@@ -23,7 +30,7 @@
                  answer_query/7]).
 
 % compilation settings
-%:- check.
+:- check.
 :- style_check([-discontiguous]).
 %%%%%%:- set_prolog_flag(compile_meta_arguments, control). % enabling makes tracing hard to follow
 

@@ -73,8 +73,13 @@ $ python3 racews.py
 %  Substitution: what = sleep
 %  Substitution: how/when/where = (positive of) silently
 %  Substitution: something = (at least 1) cat, (positive of) red
-% 
-% 
+%
+%  Subset 2
+%  1: John's red cat sleeps silently on a chair.
+%  Substitution: what = sleep
+%  Substitution: how/when/where = (on) (at least 1) chair
+%  Substitution: something = (at least 1) cat, (positive of) red
+%  
 %  Axiom: The teacher selects two most promising students of the beginner's class for the examination.
 % 
 %  Query: What is there?

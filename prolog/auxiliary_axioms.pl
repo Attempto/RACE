@@ -5,7 +5,7 @@
 %  N. E. Fuchs
 %  University of Zurich
 %  
-%  7 March 2025
+%  14 July 2025 (added test cade for distinct_derived_noun_phrases)
 %
 %---------------------------------------------------------------------------------------------------------
 %
@@ -46,12 +46,25 @@
 %
 %---------------------------------------------------------------------------------------------------------
 %
-%  To do
+%  Log
 %
 %  2 November 2008: made disjunctions in  axioms c5 - c15 determninate; does this prevent some solutions?
 %
+%  5 March 2025: terminated development of the query "What is entailed?" since the approach chosen 
+%  cannot be extended to handle negation
+%
+%  14 July 2025: added test cade for distinct_derived_noun_phrases
+%
+%---------------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------------
+%
+%  To Do
+%
 %  consider treating be_ID and be_NP (and be_ADJ?) together to reduce the number of auxiliary axioms and
 %  thus eliminate choice points
+%
+%  check deactivated code
 %
 %---------------------------------------------------------------------------------------------------------
 
@@ -618,8 +631,9 @@ prolog_axiom_text(presupposition2, 'Prolog Axiom presupposition: "B has A" presu
 prolog_axiom(relation(World, Object, _Noun, of, Subject), _IndicesSoFar, [prolog_axiom(presupposition2)|Indices]) :-
   exists_asserted_atom(predicate(World, _Referent, have, Subject, Object), Indices).
 
-/* 5 March 2025
-% terminated development since the approach chosen cannot be extended to handle negation
+
+/* 
+% 5 March 2025: terminated development since the approach chosen cannot be extended to handle negation
 %---------------------------------------------------------------------------------------------------------
 %
 %  query "What is entailed?" generates all logical entailments of the axioms as simple positive declarative sentences
@@ -774,7 +788,7 @@ prolog_axiom(object(World, Referent, something, dom, na, na, na), _IndicesSoFar,
 %
 %  query words "who", "whose", "what" and "which"
 %
-%  current restriction: answer substitutions contain nouns and adjectives, no relative phrases
+%  current restriction: answer substitutions contain nouns and adjectives, not relative phrases
 %
 %---------------------------------------------------------------------------------------------------------
 
@@ -1012,14 +1026,14 @@ prolog_axiom(query(World, Referent, what), IndicesSoFar, [prolog_axiom(w8), what
     \+ support:subterm(relation(World, NounReferent, Noun, of, _GenitiveNounReferent), Body),
     atomic_list_concat([Noun, ' is ', Result], NounResult)
   ).
+
 % companion to w8 to prove the predicate/5 part of the question "what is ..."
 prolog_axiom(predicate(World, _ReferentPredicate, be_NP, _What, NounReferent), IndicesSoFar, []) :-
   memberchk(prolog_axiom(w8), IndicesSoFar),
   exists_asserted_atom(object(World, NounReferent, Noun, _, _, _, _), _Indices),
   \+ Noun = something, 
   % prevent unintended backtracking
-  !.
-  
+  !. 
 
 % "what" occurs in queries like "What does/do ... do?"
 % prolog_axiom(do) processes the "do" part
@@ -1084,6 +1098,7 @@ collect_results_and_indices([], NounsValues, NounsValues, IndividualIndices, Ind
 collect_results_and_indices([(Noun, Value, Index) | NounsValuesIndices], NounsValuesSoFar, NounsValues, IndicesSoFar, Indices) :-
   collect_results_and_indices(NounsValuesIndices, [Noun-Value|NounsValuesSoFar], NounsValues, [Index|IndicesSoFar], Indices).
 */
+
 /*
 % if there is a number then the question "what" can be answered
 prolog_axiom_text(w7, 'Prolog Axiom w7: If there is a number then the question "what" can be answered.').
@@ -1165,6 +1180,7 @@ convert_argument_to_value(Argument, IndexOfOriginalExpression, Value, Indices) :
     )
   ).
 */
+
 /*
 % if there are linear equations then the question "what" can be answered
 prolog_axiom_text(w9, 'Prolog Axiom w9: If there are linear equations then the question "what" can be answered.').
@@ -1225,6 +1241,7 @@ substitute_skolem_terms_by_variables(Formulas, NewFormulas, SubstitutionsSoFar, 
     Substitutions = SubstitutionsSoFar
   ).
 */
+
 /*
 convert_formulas([], []).
 
@@ -1232,7 +1249,6 @@ convert_formulas([{formula(LHS, = ,RHS)} | RestFormulas], [{ConvertedLHS = Conve
   convert(LHS, ConvertedLHS),
   convert(RHS, ConvertedRHS),
   convert_formulas(RestFormulas, ConvertedRestFormulas).
-  
   
 convert(X,X) :-
   var(X).
@@ -1404,7 +1420,7 @@ find_noun_phrase_for_preposition(NounReferent, Noun, Domain, Op, C, Properties, 
 %
 %
 %---------------------------------------------------------------------------------------------------------
-/*
+
 % if there are countable objects then the question "how many" can be answered
 % axiom works only for integers including 0 and "at least"
 % axiom does not work for "no", "does/is not", "more than", "less than", "at most"
@@ -1444,7 +1460,7 @@ prolog_axiom(query(World, Referent, how_many(Body)), _IndicesSoFar, [prolog_axio
     % there are no solutions
     fail
   ).
-*/
+
 % if there are mass objects then the question "how much" can be answered
 prolog_axiom_text(w32, 'Prolog Axiom w32: If there are mass objects then the question "how much" can be answered.').
 prolog_axiom(query(World, Referent, how_much(Body)), _IndicesSoFar, [prolog_axiom(w32), how_much(some, [])|Indices]) :-
@@ -2416,7 +2432,14 @@ distinct(Indices1, Indices2, [IndexOfDistinction]) :-
     ->
     true
   ;
-    % distinct variables 
+    % distinct derived noun phrases
+    % case "Every man is a human. Every woman is a human. Mary is a woman. John is a man. |- There are how many humans?" 
+    % case "Every man is a human. Every woman is a human. Mary is a woman. John is a man. |- There are 2 humans." 
+    distinct_derived_noun_phrases(Indices1, Indices2, [IndexOfDistinction])
+    ->
+    true
+  ;
+   % distinct variables 
     % case "There are two cows X. There are three cows Y. X are not Y. |- There are how many cows?" 
     % case "There are two blue cows X. There are three red cows Y. There are 5 white cows Z. X are not Y. Y are not Z. X are not Z. |- There are how many cows?"
     % case "There are 2.1 l of water X. There are 3.2 l of water Y. X is not Y. |- There is how much water?"
@@ -2488,7 +2511,24 @@ distinct_noun_phrases(Indices1, Indices2, IndexOfDistinction) :-
   ),
   prove_RestBody(Body3, Indices1, Indices2).
   
-  
+
+distinct_derived_noun_phrases(Indices1, Indices2, IndexOfDistinction) :-
+  % there is an object/7 definition for Noun with Indices1
+  exists_asserted_atom(object(World, A1, Noun, Class, Measure, _EQ1, _N1), Indices1),
+  % there is an object/7 definition for Noun with Indices2
+  exists_asserted_atom(object(World, A2, Noun, Class, Measure, _EQ2, _N2), Indices2),
+  eliminate_conjunct(Body, object(World, A12, Noun1, Class, _Measure, _EQ, _Num), Body1),
+  eliminate_conjunct(Body1, object(World, A22, Noun2, Class, _Measure, _EQ, _Num), Body2), 
+  (
+    (eliminate_conjunct(Body2, predicate(World, _, be_NP, A12, A22), Body3) ; eliminate_conjunct(Body2, predicate(World, _, be_ADJ, A12, A22), Body3))
+    ->
+    true
+  ; 
+    (eliminate_conjunct(Body2, predicate(World, _, be_NP, A22, A12), Body3) ; eliminate_conjunct(Body2, predicate(World, _, be_ADJ, A22, A12), Body3))
+  ),
+  prove_RestBody(Body3, Indices1, Indices2).
+ 
+
 prove_RestBody(true, _Indices1, _Indices2).
 
 prove_RestBody(Conjunct, Indices1, Indices2) :-
