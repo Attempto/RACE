@@ -8,22 +8,22 @@
 <meta name="Author" content="Kaarel Kaljurand"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/tabview/assets/skins/sam/tabview.css"/>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css"/>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css"/>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/resize.css"/>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css"/>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/container.css"/>
+<link rel="stylesheet" type="text/css" href="yui/tabview/assets/skins/sam/tabview.css"/>
+<link rel="stylesheet" type="text/css" href="yui/button/assets/skins/sam/button.css"/>
+<link rel="stylesheet" type="text/css" href="yui/menu/assets/skins/sam/menu.css"/>
+<link rel="stylesheet" type="text/css" href="yui/assets/skins/sam/resize.css"/>
+<link rel="stylesheet" type="text/css" href="yui/assets/skins/sam/skin.css"/>
+<link rel="stylesheet" type="text/css" href="yui/container/assets/container.css"/>
 
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop-min.js"></script> 
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/animation/animation-min.js"></script> 
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/tabview/tabview-min.js"></script>
+<script type="text/javascript" src="yui/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="yui/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="yui/element/element-min.js"></script>
+<script type="text/javascript" src="yui/connection/connection-min.js"></script>
+<script type="text/javascript" src="yui/container/container-min.js"></script>
+<script type="text/javascript" src="yui/menu/menu-min.js"></script>
+<script type="text/javascript" src="yui/animation/animation-min.js"></script>
+<script type="text/javascript" src="yui/button/button-min.js"></script>
+<script type="text/javascript" src="yui/tabview/tabview-min.js"></script>
 
 <style type="text/css">
 .in { background-color: #eafbc5; border: 1px solid silver; margin: 1em 1em 1em 1em; padding: 0px }
@@ -135,7 +135,7 @@ table.layout td {
 <div class="axioms">
 <div>Axioms</div>
 <textarea name="textareaAxioms" id="textareaAxioms" cols="50" rows="10">
-Every man is a human. Every woman is a human. 
+Every man is a human. Every woman is a human.
 Mary is a woman. John is a man.</textarea>
 </div>
 
@@ -152,7 +152,7 @@ Mary is a woman. John is a man.</textarea>
         <li class="selected"><a href="#tab1"><em>Check Consistency</em></a></li>
         <li><a href="#tab2"><em>Prove</em></a></li>
         <li><a href="#tab3"><em>Answer Query</em></a></li>
-    </ul>            
+    </ul>
     <div class="yui-content">
 		<div>
 			<span id="buttonCheckConsistency" class="yui-button yui-push-button">
@@ -525,7 +525,7 @@ function onProve(e) {
 	var transaction = YAHOO.util.Connect.asyncRequest('POST', racewsUrl, {
 							success:responseSuccess,
 							failure:responseFailure,
-							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Theorems</b>: " + theorems.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Theorems do not follow from axioms.', 'The following minimal subsets of the axioms entail the theorems:', new Date()] 
+							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Theorems</b>: " + theorems.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Theorems do not follow from axioms.', 'The following minimal subsets of the axioms entail the theorems:', new Date()]
 						}, env);
 }
 
@@ -536,7 +536,7 @@ function onAnswerQuery(e) {
 	var transaction = YAHOO.util.Connect.asyncRequest('POST', racewsUrl, {
 							success:responseSuccess,
 							failure:responseFailure,
-							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Query</b>: " + query.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Query cannot be answered from axioms.', 'The following minimal subsets of the axioms answer the query:', new Date()] 
+							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Query</b>: " + query.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Query cannot be answered from axioms.', 'The following minimal subsets of the axioms answer the query:', new Date()]
 						}, env);
 }
 

@@ -14,7 +14,19 @@
 ]).
 
 % Web client (which posts queries to the web service)
-:- http_handler(root(.), http_reply_file('racews.html', []), []).
+%:- http_handler(root(.), http_reply_file('racews.html', []), []).
+:-
+    %getenv('RACE_HTTPSERVER_FILES_PATH', Path),
+    %getenv('RACE_HTTPSERVER_FILES_DIR', Dir),
+    %http_handler(Path, http_reply_from_files(Dir, []), [prefix]);
+    http_handler(root(.), http_reply_from_files(racews, []), [prefix]);
+    true.
+
+
+% Allow any origin.
+% TODO: make configurable on the command-line
+%:- set_setting(http:cors, [*]).
+
 % Web service
 :- http_handler(root(service/race), race_handler, [method(post)]).
 
