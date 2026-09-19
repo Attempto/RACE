@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>RACE web client</title>
+<meta name="Author" content="Kaarel Kaljurand"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<link rel="stylesheet" type="text/css" href="yui/tabview/assets/skins/sam/tabview.css"/>
+<link rel="stylesheet" type="text/css" href="yui/button/assets/skins/sam/button.css"/>
+<link rel="stylesheet" type="text/css" href="yui/menu/assets/skins/sam/menu.css"/>
+<link rel="stylesheet" type="text/css" href="yui/assets/skins/sam/resize.css"/>
+<link rel="stylesheet" type="text/css" href="yui/assets/skins/sam/skin.css"/>
+<link rel="stylesheet" type="text/css" href="yui/container/assets/container.css"/>
+
+<script type="text/javascript" src="yui/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="yui/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="yui/element/element-min.js"></script>
+<script type="text/javascript" src="yui/connection/connection-min.js"></script>
+<script type="text/javascript" src="yui/container/container-min.js"></script>
+<script type="text/javascript" src="yui/menu/menu-min.js"></script>
+<script type="text/javascript" src="yui/animation/animation-min.js"></script>
+<script type="text/javascript" src="yui/button/button-min.js"></script>
+<script type="text/javascript" src="yui/tabview/tabview-min.js"></script>
+
+<style type="text/css">
+.in { background-color: #eafbc5; border: 1px solid silver; margin: 1em 1em 1em 1em; padding: 0px }
+.aux { background-color: #ffe; font-family: monospace }
+textarea { font-size: 90%; font-family: sans-serif }
+.parameters { background-color: #ffe }
+
+.axioms, #lexiconField {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding: 0.2em 0.2em 0.2em 0.2em;
+	background-color: #ace;
+	border: 1px solid #777
+}
+
+#lexiconField {
+	display: none;
+}
+
+
+body { font-family: sans-serif }
+.indent1em { margin-left: 1em }
+.result { margin-top: 1em; padding: 0px; background-color: #eee; border: 1px solid silver }
+#results { margin-top: 1em }
+.infoBox { background-color: #acd; padding-left: 0.4em; font-family: monospace }
+p { margin: 1em 1em 1em 1em; padding: 0px }
+.nb { color: red }
+ul ul {
+	list-style-type: square;
+}
+
+table{
+	color: inherit;
+	background-color: #fee;
+	empty-cells: show;
+	border-collapse: collapse;
+	margin: 1em 1em 1em 1em;
+}
+
+table thead {
+	color: inherit;
+	background-color: #fdd;
+	font-weight: bold;
+}
+
+table td {
+	padding: 0.2em;
+	border: 1px solid silver;
+	vertical-align: top;
+}
+
+table td.error {
+	background-color: #f66;
+}
+
+table td.warning {
+	background-color: yellow;
+}
+
+table.layout {
+	margin: 0px;
+	padding: 0px;
+	background-color: transparent;
+	border: none;
+}
+
+table.layout td {
+	border: none;
+}
+.paramBox {
+	margin-top: 0.4em
+}
+.nowrap {
+	white-space: nowrap;
+}
+</style>
+</head>
+
+<body class="yui-skin-sam">
+
+<div style="position: fixed">
+<div id="parameters">
+<div class="hd">Parameters</div>
+<div class="bd">
+	<div class="paramBox">Testing
+	<div class="indent1em">
+	<input id="cbRAW" type="checkbox" title="raw"/>show all raw proofs (raw)<br/>
+	</div>
+	</div>
+</div>
+<div class="ft"></div>
+</div>
+</div>
+
+<div>
+<span id="buttonShowParameters" class="yui-button yui-push-button">
+<span class="first-child">
+<button type="button" name="buttonShowParametersName">Show Parameters</button>
+</span>
+</span>
+
+<span id="buttonShowHelp" class="yui-button yui-push-button">
+<span class="first-child">
+<button type="button" name="buttonShowHelpName">Show Help</button>
+</span>
+</span>
+</div>
+
+<div class="axioms">
+<div>Axioms</div>
+<textarea name="textareaAxioms" id="textareaAxioms" cols="50" rows="10">
+Every man is a human. Every woman is a human.
+Mary is a woman. John is a man.</textarea>
+</div>
+
+<div id="lexiconField">
+<span class="menuLabel">Lexicon</span>
+<span class="nowrap">
+<input id="ulexfile" type="text" name="lexicon" size="60" title="Enter the web address of the user lexicon." value=""/>
+<input id="ulexreload" type="checkbox" title="Reload the user lexicon from the given web address."/>Reload the lexicon from URL
+</span>
+</div>
+
+<div id="tabsRace" class="yui-navset">
+    <ul class="yui-nav">
+        <li class="selected"><a href="#tab1"><em>Check Consistency</em></a></li>
+        <li><a href="#tab2"><em>Prove</em></a></li>
+        <li><a href="#tab3"><em>Answer Query</em></a></li>
+    </ul>
+    <div class="yui-content">
+		<div>
+			<span id="buttonCheckConsistency" class="yui-button yui-push-button">
+				<span class="first-child">
+					<button type="button" name="buttonCheckConsistencyName">Check Consistency</button>
+				</span>
+			</span>
+		</div>
+		<div>
+			<div>Theorems</div>
+			<table class="layout"><tr>
+							<td><textarea name="textareaProve" id="textareaProve" cols="40" rows="2">There is a human.</textarea></td>
+			<td><button type="button" id="buttonProve" name="buttonProveName" value="Prove">Prove</button></td>
+			</tr></table>
+		</div>
+		<div class="queryTab">
+			<div>Query</div>
+			<table class="layout"><tr>
+			<td><textarea name="textareaAnswerQuery" id="textareaAnswerQuery" cols="40" rows="1">Who is a man and is a human?</textarea></td>
+			<td><button type="button" id="buttonAnswerQuery" name="buttonAnswerQueryName" value="Answer Query">Answer Query</button></td>
+			</tr></table>
+		</div>
+    </div>
+</div>
+
+<div id="results">
+</div>
+
+</body>
+<script type="text/javascript">
+var raceNS = "http://attempto.ifi.uzh.ch/race";
+//var racewsUrl = "http://attempto.ifi.uzh.ch/ws/race/racews.perl";
+var racewsUrl = "/service/race";
+var raceHelp = "http://attempto.ifi.uzh.ch/site/docs/race_webclient_help.html";
+
+// BUG: temporary hack to use the unizh-URI as the webservice URI
+// in case the client uses the unizh-URI. The problem is that due to
+// security constraints the two URIs must match.
+if ((window.location.href).match(/\.unizh\./)) {
+	racewsUrl = racewsUrl.replace(/\.uzh\./, ".unizh.");
+}
+// Same thing for supporting the numeric IP of attilio
+if ((window.location.href).match(/130\.60\.155\.161/)) {
+	racewsUrl = racewsUrl.replace(/attempto\.ifi\.uzh\.ch/, "130.60.155.161");
+}
+
+var panelParameters = new YAHOO.widget.Panel("parameters", {
+							// fixedcenter: true,
+							constraintoviewport: true,
+							underlay: "shadow",
+							visible: false,
+							close: true,
+							draggable: true,
+							width: "350px" });
+
+panelParameters.center();
+// This makes sure that the popup is not rendered under the tabs
+panelParameters.render(document.body);
+
+var results = new YAHOO.util.Element('results');
+var textareaAxioms = new YAHOO.util.Element('textareaAxioms');
+var textareaProve = new YAHOO.util.Element('textareaProve');
+var textareaAnswerQuery = new YAHOO.util.Element('textareaAnswerQuery');
+var ulexfile = new YAHOO.util.Element('ulexfile');
+var ulexreload = new YAHOO.util.Element('ulexreload');
+
+function Parameters() {
+	this.p = new Object();
+
+	this.p.raw = new YAHOO.util.Element('cbRAW');
+
+	var labels = {
+		"raw"  : "display all raw proofs",
+	};
+
+	this.toHTML = function () {
+		var str = "";
+		for (var i in this.p) {
+			if (this.p[i].get('checked')) {
+				str += "<em title='" + labels[i] + "'>" + i + "</em> ";
+			}
+		}
+		return str;
+	};
+
+	this.toXML = function () {
+		var str = "";
+		for (var i in this.p) {
+			if (this.p[i].get('checked')) {
+				str += "<race:Parameter>" + i + "</race:Parameter>\n";
+			}
+		}
+		return str;
+	};
+};
+
+
+function Axioms(axioms) {
+	this.axioms = axioms.get('value');
+	this.toXML = function () {
+		return "<race:Axioms>" + escapeXml(this.axioms) + "</race:Axioms>";
+	};
+	this.escape = function () {
+		return escapeXml(this.axioms);
+	};
+}
+
+function Theorems(theorems) {
+	this.theorems = theorems.get('value');
+	this.toXML = function () {
+		return "<race:Theorems>" + escapeXml(this.theorems) + "</race:Theorems>";
+	};
+	this.escape = function () {
+		return escapeXml(this.theorems);
+	};
+}
+
+function Query(query) {
+	this.query = query.get('value');
+	this.toXML = function () {
+		return "<race:Theorems>" + escapeXml(this.query) + "</race:Theorems>";
+	};
+	this.escape = function () {
+		return escapeXml(this.query);
+	};
+}
+
+function Ulex(ulexfile, ulexreload) {
+	this.ulexfile = ulexfile.get('value');
+	this.ulexreload = ulexreload.get('value');
+	this.toXML = function () {
+		var str = "";
+		if (this.ulexfile != "") {
+			str += "<race:Ulexfile>" + escapeXml(this.ulexfile) + "</race:Ulexfile>";
+		}
+		if (this.ulexreload != "") {
+			str += "<race:Ulexreload>" + escapeXml(this.ulexreload) + "</race:Ulexreload>";
+		}
+		return str;
+	};
+}
+
+
+var parameters = new Parameters();
+
+new YAHOO.widget.Tooltip("tooltipCheckConsistency", { context:"buttonCheckConsistency", text:"Check the consistency of the entered axioms.", showDelay:500 } );
+new YAHOO.widget.Tooltip("tooltipProve", { context:"buttonProve", text:"Check if axioms entail the theorems.", showDelay:500 } );
+new YAHOO.widget.Tooltip("tooltipAnswerQuery", { context:"buttonAnswerQuery", text:"Find the answer to the entered query.", showDelay:500 } );
+new YAHOO.widget.Tooltip("tooltipShowParameters", { context:"buttonShowParameters", text:"Open the parameters panel.", showDelay:500 } );
+
+var tabsRace = new YAHOO.widget.TabView("tabsRace");
+
+var buttonCheckConsistency = new YAHOO.widget.Button("buttonCheckConsistency",  {type: "push"});
+var buttonProve = new YAHOO.widget.Button("buttonProve", {type: "push"});
+var buttonAnswerQuery = new YAHOO.widget.Button("buttonAnswerQuery", {type: "push"});
+var buttonShowParameters = new YAHOO.widget.Button("buttonShowParameters", {type: "push"});
+var buttonShowHelp = new YAHOO.widget.Button("buttonShowHelp", {type: "push"});
+
+
+
+buttonCheckConsistency.on("click", onCheckConsistency);
+buttonProve.on("click", onProve);
+buttonAnswerQuery.on("click", onAnswerQuery);
+buttonShowParameters.on("click", function() {panelParameters.show()});
+buttonShowHelp.on("click", function() { window.open(raceHelp,'help_window','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=850, height=600'); });
+
+// BUG: place this into a class (like with parameters)
+function messagesToHtml(errors, warnings) {
+	var numberOfMessages = errors.length + warnings.length;
+	if (numberOfMessages == 0) {
+		return "";
+	}
+
+	var html = "";
+	
+	if (numberOfMessages == 1) {
+		html += "<p>There is " + numberOfMessages + " message.</p>";
+	}
+	else {
+		html += "<p>There are " + numberOfMessages + " messages.</p>";
+	}
+
+	html += "<table><thead><tr><td>Importance</td><td>Type</td><td>Sentence</td><td>Problem</td><td>Description/Suggestion</td></tr></thead><tbody>";
+	for (var i = 0; i < errors.length; i++) {
+		html += messageToHtml(errors[i], "error");
+	}
+	for (var i = 0; i < warnings.length; i++) {
+		html += messageToHtml(warnings[i], "warning");
+	}
+	html += "</tbody>";
+	html += "</table>";
+	return html;
+}
+
+function messageToHtml(message, className) {
+	var html = "";
+	html += "<tr>";
+	html += "<td class=\"" + className + "\">" + escapeXml(message.importance) + "</td>";
+	html += "<td>" + escapeXml(message.type) + "</td>";
+	html += "<td>" + escapeXml(message.sentenceID) + "</td>";
+	html += "<td>" + escapeXml(message.subject) + "</td>";
+	html += "<td>" + escapeXml(message.description) + "</td>";
+	html += "</tr>";
+	return html;
+}
+
+function snippetsToHtml(snippets) {
+	var html = "";
+	html += "<ul>";
+	for (var i = 0; i < snippets.length; i++) {
+		var n = i + 1;
+		html += "<li>Subset " + n + pairToHtml(snippets[i]) + "</li>";
+	}
+	html += "</ul>";
+	return html;
+}
+
+function pairToHtml(pair) {
+	var html = "";
+	html += "<p>" + snippetToHtml(pair[0]) + "</p>";
+	html += "<pre class='raw'>" + snippetToHtml(pair[1]) + "</pre>";
+	return html;
+}
+
+function snippetToHtml(snippet) {
+	var html = "";
+	html += "<ul>";
+	for (var i = 0; i < snippet.length; i++) {
+		html += "<li>" + escapeXml(snippet[i]) + "</li>";
+	}
+	html += "</ul>";
+	return html;
+}
+
+
+/**
+RACE webservice message format example:
+
+<race:Message>
+  <race:Importance>error</race:Importance>
+  <race:Type>race</race:Type>
+  <race:SentenceID></race:SentenceID>
+  <race:Subject>Axioms cannot be parsed.</race:Subject>
+  <race:Description>Correct axioms.</race:Description>
+</race:Message>
+*/
+function getMessages(xml) {
+	if (xml == null) {
+		alert("responseXML == null");
+	}
+	var reply = xml.getElementsByTagNameNS(raceNS, "Reply");
+	if (reply == null || reply.length == 0) {
+		alert("race:Reply not found");
+		return null;
+	}
+	var messagesNodes = reply[0].getElementsByTagNameNS(raceNS, "Message");
+	if (messagesNodes == null) { // BUG: this cannot happen, can it?
+		alert("race:Message not found");
+		return null;
+	}
+	var errors = [];
+	var warnings = [];
+	for (var i = 0; i < messagesNodes.length; i++) {
+		var importance =  messagesNodes[i].getElementsByTagNameNS(raceNS, "Importance");
+		var type =        messagesNodes[i].getElementsByTagNameNS(raceNS, "Type");
+		var sentenceID =  messagesNodes[i].getElementsByTagNameNS(raceNS, "SentenceID");
+		var subject =     messagesNodes[i].getElementsByTagNameNS(raceNS, "Subject");
+		var description = messagesNodes[i].getElementsByTagNameNS(raceNS, "Description");
+
+		if (getTextContent(importance[0]) == "error") {
+			errors.push({
+				"importance"  : "error",
+				"type"        : getTextContent(type[0]),
+				"sentenceID"  : getTextContent(sentenceID[0]),
+				"subject"     : getTextContent(subject[0]),
+				"description" : getTextContent(description[0])
+			});
+		}
+		else {
+			warnings.push({
+				"importance"  : getTextContent(importance[0]),
+				"type"        : getTextContent(type[0]),
+				"sentenceID"  : getTextContent(sentenceID[0]),
+				"subject"     : getTextContent(subject[0]),
+				"description" : getTextContent(description[0])
+			});
+		}
+	}
+	return [errors, warnings];
+}
+
+/**
+var snippets = [
+	[ ['Every dog is a cat.', 'No dog is a cat.', 'Fido is a dog and is a cat.'], [] ],
+	[ ['Every dog is a cat.', 'No dog is a cat.', 'Miisu is a dog and is a cat.'], [reason1, reason2] ]
+];
+*/
+function getSnippets(xml) {
+	if (xml == null) {
+		alert("responseXML == null");
+	}
+	var reply = xml.getElementsByTagNameNS(raceNS, "Reply");
+	if (reply == null || reply.length == 0) {
+		alert("race:Reply not found");
+		return null;
+	}
+	var proofs = reply[0].getElementsByTagNameNS(raceNS, "Proof");
+	if (proofs == null) { // BUG: this cannot happen, can it?
+		alert("race:Proof not found");
+		return null;
+	}
+	var proofList = [];
+	for (var i = 0; i < proofs.length; i++) {
+		var usedAxioms = proofs[i].getElementsByTagNameNS(raceNS, "UsedAxioms");
+		if (usedAxioms == null) { // BUG: this cannot happen, can it?
+			alert("race:UsedAxioms not found for race:Proof " + i);
+			return null;
+		}
+		var usedAuxAxioms = proofs[i].getElementsByTagNameNS(raceNS, "UsedAuxAxioms");
+		if (usedAuxAxioms == null) { // BUG: this cannot happen, can it?
+			alert("race:UsedAuxAxioms not found for race:Proof " + i);
+			return null;
+		}
+		var axiomPair = [];
+		axiomPair.push(nodeListToStrList(usedAxioms[0].getElementsByTagNameNS(raceNS, "Axiom")));
+		axiomPair.push(nodeListToStrList(usedAuxAxioms[0].getElementsByTagNameNS(raceNS, "AuxAxiom")));
+		proofList.push(axiomPair);
+	}
+	return proofList;
+}
+
+
+function nodeListToStrList(nodeList) {
+	var strList = [];
+	for (var j = 0; j < nodeList.length; j++) {
+		strList.push(getTextContent(nodeList[j]));
+	}
+	return strList;
+}
+
+
+// BUG: there must be a YUI built-in for that
+// BUG: We assume that node has only textual nodes as child nodes
+function getTextContent(node) {
+	if (node == null || !node.hasChildNodes()) {
+		return "";
+	}
+	var textContent = "";
+	for (var i = 0; i < node.childNodes.length; i++) {
+		textContent += node.childNodes[i].nodeValue;
+	}
+	return textContent;
+}
+
+
+function onCheckConsistency(e) {
+	var axioms = new Axioms(textareaAxioms);
+	var env = makeSoap(parameters, [axioms, new Ulex(ulexfile, ulexreload)], "<race:Mode>check_consistency</race:Mode>");
+	var transaction = YAHOO.util.Connect.asyncRequest('POST', racewsUrl, {
+							success:responseSuccess,
+							failure:responseFailure,
+							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Axioms are consistent.', 'Axioms are <span class="nb">inconsistent</span>. The following minimal subsets of the axioms cause inconsistency:', new Date()]
+							}, env);
+}
+
+function onProve(e) {
+	var axioms = new Axioms(textareaAxioms);
+	var theorems = new Theorems(textareaProve);
+	var env = makeSoap(parameters, [axioms, theorems, new Ulex(ulexfile, ulexreload)], "<race:Mode>prove</race:Mode>");
+	var transaction = YAHOO.util.Connect.asyncRequest('POST', racewsUrl, {
+							success:responseSuccess,
+							failure:responseFailure,
+							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Theorems</b>: " + theorems.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Theorems do not follow from axioms.', 'The following minimal subsets of the axioms entail the theorems:', new Date()]
+						}, env);
+}
+
+function onAnswerQuery(e) {
+	var axioms = new Axioms(textareaAxioms);
+	var query = new Query(textareaAnswerQuery);
+	var env = makeSoap(parameters, [axioms, query, new Ulex(ulexfile, ulexreload)], "<race:Mode>answer_query</race:Mode>");
+	var transaction = YAHOO.util.Connect.asyncRequest('POST', racewsUrl, {
+							success:responseSuccess,
+							failure:responseFailure,
+							argument: ["<p><b>Axioms</b>: " + axioms.escape() + "</p>" + "<p><b>Query</b>: " + query.escape() + "</p>" + "<p><b>Parameters</b>: " + parameters.toHTML() + "</p>", 'Query cannot be answered from axioms.', 'The following minimal subsets of the axioms answer the query:', new Date()]
+						}, env);
+}
+
+
+function makeSoap(parameters, parts, mode) {
+	var partsStr = "";
+	for (var i = 0; i < parts.length; i++) {
+		partsStr += parts[i].toXML();
+	}
+	return "<env:Envelope xmlns:env='http://schemas.xmlsoap.org/soap/envelope/' xmlns:race='http://attempto.ifi.uzh.ch/race'><env:Body><race:Request>" + parameters.toXML() + partsStr + mode + "</race:Request></env:Body></env:Envelope>";
+}
+
+
+function escapeXml(str) {
+	str = str.replace(/\&/g, "&amp;");
+	str = str.replace(/</g, "&lt;");
+	return str;
+}
+
+
+/*
+ * Response object properties:
+ * o.tId
+ * o.status
+ * o.statusText
+ * o.getResponseHeader[ ]
+ * o.getAllResponseHeaders
+ * o.responseText
+ * o.responseXML
+ * o.argument
+ *
+ * where
+ * argument[0]: axioms/theorems/query/parameters
+ * argument[1]: to be shown if there are no errors and the snippet list is empty
+ * argument[2]: to be shown if there are no errors and the snippet list is non-empty
+ * argument[3]: timestamp
+ */
+var responseSuccess = function(o) {
+	if (o.responseXML == null) {
+		alert("RACE webservice produced non-XML output:\n\n" + o.responseText);
+		exit;
+	}
+	var raceTime = "?";
+	var runtimeNode = o.responseXML.getElementsByTagNameNS(raceNS, "Runtime");
+	if (runtimeNode == null) { // BUG: this cannot happen, can it?
+		alert("race:Runtime not found");
+	}
+	else {
+		raceTime = getTextContent(runtimeNode[0]) / 1000;
+	}
+	var snippets = getSnippets(o.responseXML);
+	var messages = getMessages(o.responseXML);
+	var errors = messages[0];
+	var warnings = messages[1];
+	
+	var html = "<div class='in'>" + o.argument[0] + "</div>";
+
+	html += messagesToHtml(errors, warnings);
+
+	if (errors.length == 0) {
+		if (snippets.length == 0) {
+			// BUG: we only check the type of the first warning, but
+			// we could/should also check the errors, and all the warnings (errors)
+			if (warnings.length != 1 || warnings[0]["type"] != "timelimit") {
+				html += "<p>" + o.argument[1] + "</p>";
+			}
+			var whyNotWordList = o.responseXML.getElementsByTagNameNS(raceNS, "Word");
+			var words = nodeListToStrList(whyNotWordList);
+			if (words.length != 0) {
+				html += "<p>The following parts of the theorems/query could not be proved:</p>";
+				html += snippetToHtml(words);
+			}
+		}
+		else {
+			html += "<p>" + o.argument[2] + "</p>";
+			html += snippetsToHtml(snippets);
+		}
+	}
+
+	var overallTimeEnd = new Date();
+	var overallTime = (overallTimeEnd.getTime() - o.argument[3].getTime())/1000;
+
+	var div = document.createElement("div");
+	div.innerHTML = "<div class='result'>" + makeInfoBox(o.tId, overallTime, raceTime) + html + "</div>";
+	results.get('element').insertBefore(div, results.get('element').firstChild);
+};
+
+var responseFailure = function(o) {
+	var div = document.createElement("div");
+	div.innerHTML = o.tId + ": " + o.status + ": " + o.statusText;
+	results.get('element').insertBefore(div, results.get('element').firstChild);
+}
+
+function makeInfoBox(id, overallTime, raceTime) {
+	return "<div class='infoBox'>overall time: " + overallTime + " sec; RACE time: " + raceTime + " sec</div>";
+}
+
+//new YAHOO.util.Resize('results');
+//results.setStyle('font-family', 'sans-serif');
+//div.setStyle('color', '#f00');
+//div.setStyle('font-family', 'monospace');
+//div.setStyle('font-weight', 'bold');
+
+</script>
+</html>
